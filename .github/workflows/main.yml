@@ -1,11 +1,12 @@
 name: main
 
-# Run every day at 2am Pacific
+# Run every day at 2am Pacific (disabled for now - ECDC changed to weekly reporting and data format changed)
 on:
   workflow_dispatch:
     inputs:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: ""
+    # - cron: "0 9 * * *"
 
 jobs:
   run-xform:
