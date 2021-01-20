@@ -10,11 +10,22 @@ httr::GET("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv",
 
 data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
   dplyr::mutate(dateRep = as.Date(dateRep, format = "%d/%m/%Y")) %>%
-  dplyr::select(-day, -month, -year, -countryterritoryCode,
-    -countriesAndTerritories, -popData2019, -continentExp) %>%
-  dplyr::rename(date = "dateRep", admin0_code = "geoId") %>%
-  dplyr::mutate(admin0_code = ifelse(admin0_code == "JPG11668", "ZZ", admin0_code)) %>%
-  dplyr::select(admin0_code, date, cases, deaths)
+  dplyr::select(-year_week, -countryterritoryCode,
+    -countriesAndTerritories, -popData2019) %>%
+  dplyr::rename(date = "dateRep", cases = "cases_weekly",
+    deaths = "deaths_weekly", admin0_code = "geoId") %>%
+  dplyr::mutate(admin0_code = ifelse(admin0_code == "JPG11668", 
+    "International Conveyance", admin0_code)) %>%
+  dplyr::select(admin0_code, date, cases, deaths) %>%
+  dplyr::arrange(admin0_code, date)
+
+# needs to be daily - fill in other days with zeros
+data <- data %>%
+  dplyr::group_by(admin0_code) %>%
+  tidyr::complete(
+    date = seq.Date(min(date), max(date), by = "day"),
+    fill = list(cases = 0, deaths = 0)) %>%
+  tidyr::fill(admin0_code)
 
 message("Most recent date: ", max(data$date))
 
