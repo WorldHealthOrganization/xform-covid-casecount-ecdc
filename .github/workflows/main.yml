@@ -1,6 +1,6 @@
 name: main
 
-# Run every day at 2am Pacific (disabled for now - ECDC changed to weekly reporting and data format changed)
+# Run every day at 2am Pacific
 on:
   workflow_dispatch:
     inputs:
