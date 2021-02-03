@@ -24,10 +24,12 @@ message("Test message1")
 message(dim(data)[1])
 # needs to be daily - fill in other days with zeros
 data <- data %>%
-  tidyr::complete(
+    dplyr::group_by(admin0_code) %>%
+    tidyr::complete(
     date = seq.Date(min(date), max(date), by = "day"),
     fill = list(cases = 0, deaths = 0)) %>%
   tidyr::fill(admin0_code) %>%
+  ungroup()
 message("Test message2")
 message("Most recent date: ", max(data$date))
 
