@@ -1,7 +1,7 @@
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(httr))
 
-readr::write_csv(head(iris), "output/iris.csv")
+message("Test message")
 
 dir.create("output", showWarning = FALSE)
 dir.create("output/admin0", showWarning = FALSE)
