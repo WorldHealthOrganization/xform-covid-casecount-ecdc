@@ -20,7 +20,7 @@ data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
     "International Conveyance", admin0_code)) %>%
   dplyr::select(admin0_code, date, cases, deaths) %>%
   dplyr::arrange(admin0_code, date)
-
+message("Test message1")
 # needs to be daily - fill in other days with zeros
 data <- data %>%
   dplyr::group_by(admin0_code) %>%
@@ -29,7 +29,7 @@ data <- data %>%
     fill = list(cases = 0, deaths = 0)) %>%
   tidyr::fill(admin0_code) %>%
   ungroup()
-
+message("Test message2")
 message("Most recent date: ", max(data$date))
 
 # fix the codes they use for Greece and UK
@@ -42,17 +42,17 @@ ccd <- data %>%
   dplyr::summarise(n = sum(cases)) %>%
   dplyr::filter(n == 0) %>%
   dplyr::pull(admin0_code)
-
+message("Test message3")
 if (length(ccd) > 0)
   data <- dplyr::filter(data, !admin0_code %in% ccd)
-
+message("Test message4")
 admin0 <- data %>%
   dplyr::group_by(admin0_code) %>%
   dplyr::arrange(date) %>%
   dplyr::mutate(cases = cumsum(cases), deaths = cumsum(deaths)) %>%
   dplyr::filter(date >= min(date[cases > 0])) %>%
   dplyr::arrange(admin0_code, date)
-
+message("Test message5")
 # fill in any date that is missing
 mdate <- max(admin0$date)
 admin0 <- admin0 %>%
@@ -60,7 +60,7 @@ admin0 <- admin0 %>%
   tidyr::complete(date = seq.Date(max(date), mdate, by = "day")) %>%
   tidyr::fill(cases, deaths) %>%
   arrange(admin0_code, date)
-
+message("Test message6")
 # admin0 %>%
 #   group_by(admin0_code) %>%
 #   summarise(m = max(date)) %>%
