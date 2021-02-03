@@ -21,6 +21,7 @@ data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
   dplyr::select(admin0_code, date, cases, deaths) %>%
   dplyr::arrange(admin0_code, date)
 message("Test message1")
+message(dim(data)[1])
 # needs to be daily - fill in other days with zeros
 data <- data %>%
   tidyr::complete(
