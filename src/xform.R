@@ -58,7 +58,6 @@ data$admin0_code[data$admin0_code == "EL"] <- "GR"
 data$admin0_code[data$admin0_code == "UK"] <- "GB"
 # International Conveyance should be coded as "ZZ"
 data$admin0_code[data$admin0_code == "International Conveyance"] <- "ZZ"
-
 # if any coutry has all cases zero, get rid of it
 ccd <- data %>%
   dplyr::group_by(admin0_code) %>%
