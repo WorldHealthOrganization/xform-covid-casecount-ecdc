@@ -32,8 +32,8 @@ data <- data %>%
   tidyr::complete(
     date = seq.Date(min(date), max(date), by = "day"),
     fill = list(cases = 0, deaths = 0)) %>%
-  tidyr::fill(admin0_code, idx, .direction = "up") %>%
-  ungroup()
+  ungroup() %>%
+  tidyr::fill(admin0_code, idx, .direction = "up")
 
 # average out counts across each week so that they add up weekly
 # but we have daily counts so that daily plots look good
