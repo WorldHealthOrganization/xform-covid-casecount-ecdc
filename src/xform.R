@@ -16,26 +16,48 @@ data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
     -countriesAndTerritories, -popData2019) %>%
   dplyr::rename(date = "dateRep", cases = "cases_weekly",
     deaths = "deaths_weekly", admin0_code = "geoId") %>%
-  dplyr::mutate(admin0_code = ifelse(admin0_code == "JPG11668", 
+  dplyr::mutate(admin0_code = ifelse(admin0_code == "JPG11668",
     "International Conveyance", admin0_code)) %>%
   dplyr::select(admin0_code, date, cases, deaths) %>%
   dplyr::arrange(admin0_code, date)
+
 message("Test message1")
 message(dim(data)[1])
+
+data$idx <- seq_len(nrow(data))
+
 # needs to be daily - fill in other days with zeros
 data <- data %>%
-    dplyr::group_by(admin0_code) %>%
-    tidyr::complete(
+  dplyr::group_by(admin0_code) %>%
+  tidyr::complete(
     date = seq.Date(min(date), max(date), by = "day"),
     fill = list(cases = 0, deaths = 0)) %>%
-  # tidyr::fill(admin0_code) %>%
+  tidyr::fill(admin0_code, idx, .direction = "up") %>%
   ungroup()
+
+# average out counts across each week so that they add up weekly
+# but we have daily counts so that daily plots look good
+avg_counts <- function(x) {
+  n <- length(x)
+  avg <- sum(x) / n
+  fl <- floor(avg)
+  n2 <- as.integer(round(n * (avg - fl), 0))
+  c(rep(fl, n - n2), rep(fl + 1, n2))
+}
+data <- data %>%
+  group_by(idx) %>%
+  mutate(cases = avg_counts(cases), deaths = avg_counts(deaths)) %>%
+  ungroup() %>%
+  select(-idx)
+
 message("Test message2")
 message("Most recent date: ", max(data$date))
 
 # fix the codes they use for Greece and UK
 data$admin0_code[data$admin0_code == "EL"] <- "GR"
 data$admin0_code[data$admin0_code == "UK"] <- "GB"
+# International Conveyance should be coded as "ZZ"
+data$admin0_code[data$admin0_code == "International Conveyance"] <- "ZZ"
 
 # if any coutry has all cases zero, get rid of it
 ccd <- data %>%
