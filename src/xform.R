@@ -31,7 +31,7 @@ data <- data %>%
   dplyr::group_by(admin0_code) %>%
   tidyr::complete(
     date = seq.Date(min(date), max(date), by = "day"),
-    fill = list(cases = NA, deaths = NA)) %>% ## Temp change JS 20210209 from: fill = list(cases = 0, deaths = 0)) %>%
+    fill = list(cases = 0, deaths = 0)) %>% 
   ungroup() %>%
   tidyr::fill(admin0_code, idx, .direction = "up")
 
