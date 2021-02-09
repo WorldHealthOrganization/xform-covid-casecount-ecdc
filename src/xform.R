@@ -31,10 +31,11 @@ data <- data %>%
   dplyr::group_by(admin0_code) %>%
   tidyr::complete(
     date = seq.Date(min(date), max(date), by = "day"),
-    fill = list(cases = 0, deaths = 0)) %>%
+    fill = list(cases = NA, deaths = NA)) %>% ## Temp change JS 20210209 from: fill = list(cases = 0, deaths = 0)) %>%
   ungroup() %>%
   tidyr::fill(admin0_code, idx, .direction = "up")
 
+if(FALSE){
 # average out counts across each week so that they add up weekly
 # but we have daily counts so that daily plots look good
 avg_counts <- function(x) {
@@ -49,7 +50,8 @@ data <- data %>%
   mutate(cases = avg_counts(cases), deaths = avg_counts(deaths)) %>%
   ungroup() %>%
   select(-idx)
-
+}
+  
 message("Test message2")
 message("Most recent date: ", max(data$date))
 
