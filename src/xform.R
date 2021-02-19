@@ -11,8 +11,6 @@ httr::GET("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv",
   httr::authenticate(":", ":", type = "ntlm"),
   httr::write_disk(tf <- tempfile(fileext = ".csv")))
 
-https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv
-
 data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
   dplyr::mutate(dateRep = as.Date(dateRep, format = "%d/%m/%Y")) %>%
   dplyr::select(-year_week, -countryterritoryCode,
