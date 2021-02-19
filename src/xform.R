@@ -6,9 +6,12 @@ message("Test message")
 dir.create("output", showWarning = FALSE)
 dir.create("output/admin0", showWarning = FALSE)
 
-httr::GET("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv",
+#httr::GET("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", # JS # 2021-02-19
+httr::GET("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv",
   httr::authenticate(":", ":", type = "ntlm"),
   httr::write_disk(tf <- tempfile(fileext = ".csv")))
+
+https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv
 
 data <- suppressMessages(readr::read_csv(tf, na = "")) %>%
   dplyr::mutate(dateRep = as.Date(dateRep, format = "%d/%m/%Y")) %>%
