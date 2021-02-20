@@ -1,6 +1,6 @@
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(httr))
-suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(ISOweek))
 
 
 message("Test message")
@@ -34,15 +34,14 @@ ISO2 = c("AF","AL","DZ","AD","AO","AI","AG","AR","AM","AW","AU","AT","AZ","BS","
 )
 
 data <- suppressMessages(readr::read_csv(tf, na = "")) %>% 
-  dplyr::mutate(dateRep = as.Date(dateRep, format = "%d/%m/%Y")) %>%
-  dplyr::select(-year_week, -countryterritoryCode,
-    -countriesAndTerritories, -popData2019) %>%
-  dplyr::rename(date = "dateRep", cases = "cases_weekly",
-    deaths = "deaths_weekly", admin0_code = "geoId") %>%
+right_join(ISO_2_3,by = c("country_code"="ISO3")) %>% 
+  dplyr::mutate(date = ISOweek2date(paste0(substring(year_week,1,4),"-W",substring(year_week,6,7),"-1"))) %>%
+  dplyr::select(weekly_count,indicator,date,ISO2) %>%
+  pivot_wider(names_from=indicator,values_from=weekly_count)  %>%
+  dplyr::rename(admin0_code = "ISO2") %>%
   dplyr::mutate(admin0_code = ifelse(admin0_code == "JPG11668",
-    "International Conveyance", admin0_code)) %>%
-  dplyr::select(admin0_code, date, cases, deaths) %>%
-  dplyr::arrange(admin0_code, date)
+                                     "International Conveyance", admin0_code)) %>%
+   dplyr::arrange(admin0_code, date)
 
 
 ### Changed ECDC structure and missing ISO2 2020-02-19 END
