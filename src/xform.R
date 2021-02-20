@@ -1,6 +1,6 @@
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(httr))
-install.packages("ISOweek")
+#install.packages("ISOweek")
 suppressPackageStartupMessages(library(ISOweek))
 
 
