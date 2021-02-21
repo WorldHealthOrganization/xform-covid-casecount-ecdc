@@ -4,6 +4,30 @@ suppressPackageStartupMessages(library(httr))
 suppressPackageStartupMessages(library(ISOweek))
 
 
+# Calculation of ISO Date from week from ISOweek package
+ISOweek2date <- function (weekdate) 
+{
+    kPattern <- "^([0-9]{4})-W([0-9]{2})-([0-9]{1})$"
+    stopifnot(all(is.na(weekdate) | stringr::str_detect(weekdate, 
+        kPattern)))
+    wd_ywd <- stringr::str_match(weekdate, kPattern)
+    if (all(is.na(weekdate))) {
+        return(rep(as.Date(NA_character_), length.out = length(weekdate)))
+    }
+    stopifnot(ncol(wd_ywd) == 4)
+    year <- wd_ywd[, 2]
+    week <- as.integer(wd_ywd[, 3])
+    weekday <- as.integer(wd_ywd[, 4])
+    stopifnot(all(is.na(week) | (1 <= week & week <= 53)))
+    stopifnot(all(is.na(weekday) | (1 <= weekday & weekday <= 
+        7)))
+    january04 <- as.Date(ifelse(is.na(year), NA, paste(year, 
+        "01", "04", sep = "-")))
+    first_thursday <- thursday0(january04)
+    nearest_thursday <- first_thursday + 7 * (week - 1)
+    return(nearest_thursday - 4 + weekday)
+}
+
 message("Test message")
 
 
