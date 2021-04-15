@@ -37,7 +37,7 @@ ISO2 = c("AF","AL","DZ","AD","AO","AI","AG","AR","AM","AW","AU","AT","AZ","BS","
 )
 
 data <- suppressMessages(readr::read_csv(tf, na = "")) %>% 
-right_join(ISO_2_3,by = c("country_code"="ISO3")) %>% 
+left_join(ISO_2_3,by = c("country_code"="ISO3")) %>% 
   dplyr::mutate(date = ISOweek2date(paste0(substring(year_week,1,4),"-W",substring(year_week,6,7),"-1"))) %>%
   dplyr::mutate(date = date + 6) %>%
   dplyr::select(weekly_count,indicator,date,ISO2) %>%
