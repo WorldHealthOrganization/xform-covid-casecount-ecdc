@@ -36,7 +36,7 @@ ISO3 = c("AFG","ALB","DZA","AND","AGO","AIA","ATG","ARG","ARM","ABW","AUS","AUT"
 ISO2 = c("AF","AL","DZ","AD","AO","AI","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BQ","BA","BW","BR","VG","BN","BG","BF","BI","CV","KH","CM","CA","KY","CF","TD","CL","CN","CO","KM","CG","CR","CI","HR","CU","CW","CY","CZ","CD","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","SZ","ET","FK","FO","FJ","FI","FR","PF","GA","GE","DE","GH","GI","EL","GL","GD","GU","GT","GG","GN","GW","GY","HT","HN","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM","JP","JE","JO","KZ","KE","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MG","MW","MY","MV","ML","MT","MH","MR","MU","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NP","NL","NC","NZ","NI","NE","NG","MK","MP","NO","OM","PK","PS","PA","PG","PY","PE","PH","PL","PT","PR","QA","RO","RU","RW","KN","LC","VC","SM","ST","SA","SN","RS","SC","SL","SG","SX","SK","SI","SB","SO","ZA","KR","SS","ES","LK","SD","SR","SE","CH","SY","TW","TJ","TZ","TH","GM","VA","TL","TG","TT","TN","TR","TC","UG","UA","AE","UK","US","UY","VI","UZ","VU","VE","VN","WF","EH","YE","ZM","ZW")
 )
 
-data <- suppressMessages(readr::read_csv(tf, na = "")) %>% 
+data <- suppressMessages(readr::read_csv(tf, na = "NA")) %>% 
 inner_join(ISO_2_3,by = c("country_code"="ISO3")) %>% 
   dplyr::mutate(date = ISOweek2date(paste0(substring(year_week,1,4),"-W",substring(year_week,6,7),"-1"))) %>%
   dplyr::mutate(date = date + 6) %>%
